@@ -28,6 +28,15 @@ Supporting files (`[workflow.md](workflow.md)`, `[examples.md](examples.md)`, et
 
 Grant only the tools the skill actually needs. Never add tools "just in case."
 
+## Workflow vs Rules
+
+Two practical patterns (lens over the official Task/Reference taxonomy — see [claude-code-skills-docs.md](claude-code-skills-docs.md)):
+
+- **Workflow** — procedural. Numbered steps that *execute a process*, each verifiable. May carry side effects → often `context: fork` + `disable-model-invocation: true`.
+- **Rules** — declarative. A *spec* for how to perform a task or produce a class of artifact. No procedure, no `context: fork`.
+
+Pick before writing: the pattern dictates whether content is steps or constraints, and whether the skill forks.
+
 ## Descriptions Drive Invocation
 
 The `description` field is the primary signal Claude uses to decide when to invoke a skill automatically. Make it keyword-rich and specific. Include "Use when..." or "Use proactively when..." phrasing for automatic triggers.
