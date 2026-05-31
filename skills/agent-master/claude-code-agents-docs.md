@@ -19,11 +19,40 @@ When invoked:
 2. Step two
 ```
 
-**Locations:**
-- Project: `.claude/agents/<name>.md` — shared via version control
-- Personal: `~/.claude/agents/<name>.md` — available in all projects
+**Locations (priority high → low, higher wins on name conflict):**
 
-Subagents load at session start. After creating a file, run `/agents` or restart to load immediately.
+| Location | Scope | Priority |
+|----------|-------|----------|
+| Managed settings | Organization-wide | 1 (highest) |
+| `--agents` CLI flag (JSON) | Current session only | 2 |
+| `.claude/agents/<name>.md` | Current project | 3 |
+| `~/.claude/agents/<name>.md` | All your projects | 4 |
+| Plugin `agents/` directory | Where plugin enabled | 5 (lowest) |
+
+Subagents load at session start. After creating a file, run `/agents` or restart to load immediately. Agents created via `/agents` interface take effect immediately.
+
+**Discovery & identity:**
+- `.claude/agents/` and `~/.claude/agents/` scanned recursively — organize into subfolders (`agents/review/`, `agents/research/`). Subfolder path does NOT affect identity; identity comes only from `name` frontmatter. Keep `name` unique across the whole tree (duplicate names in one scope → one silently discarded).
+- `--add-dir` directories grant file access only — NOT scanned for agents. Share via `~/.claude/agents/` or a plugin.
+- Plugin `agents/` also scanned recursively, but subfolder becomes part of the scoped identifier: `agents/review/security.md` in plugin `my-plugin` → `my-plugin:review:security`.
+
+**Plugin subagent restrictions:** plugin subagents ignore `hooks`, `mcpServers`, and `permissionMode` (security). To use those fields, copy the agent into `.claude/agents/` or `~/.claude/agents/`.
+
+---
+
+## Built-in Subagents
+
+Available without creating anything — Claude delegates automatically, and they are valid `agent:` targets for forked skills.
+
+| Agent | Model | Tools | Purpose |
+|-------|-------|-------|---------|
+| `Explore` | Haiku | Read-only (no Write/Edit) | File discovery, code search. Skips CLAUDE.md + git status |
+| `Plan` | Inherit | Read-only (no Write/Edit) | Codebase research during plan mode. Skips CLAUDE.md + git status |
+| `general-purpose` | Inherit | All | Complex multi-step tasks needing exploration + action |
+| `statusline-setup` | Sonnet | — | Configures status line (`/statusline`) |
+| `claude-code-guide` | Haiku | — | Answers Claude Code feature questions |
+
+Subagents cannot spawn other subagents (no nesting). Use chaining from the main conversation or Skills instead.
 
 ---
 
@@ -45,6 +74,8 @@ Subagents load at session start. After creating a file, run `/agents` or restart
 
 If both are set: `disallowedTools` applied first, then `tools` resolves against remainder. A tool in both is removed.
 
+**Unavailable to subagents** (depend on main UI/session state — listing in `tools` has no effect): `Agent`, `AskUserQuestion`, `EnterPlanMode`, `ScheduleWakeup`, `WaitForMcpServers`, and `ExitPlanMode` (unless `permissionMode: plan`).
+
 **Tool syntax examples:**
 ```yaml
 tools: Read, Grep, Glob, Bash
@@ -58,6 +89,7 @@ tools: Agent(worker, researcher), Read, Bash   # only these subagent types
 tools: Agent, Read, Bash                        # any subagent
 # omit Agent entirely = cannot spawn subagents
 ```
+(Tool `Task` renamed to `Agent` in v2.1.63; `Task(...)` still works as alias.)
 
 ### Model
 
@@ -274,6 +306,65 @@ A fork inherits the full conversation context instead of starting fresh — same
 Start a fork manually: `/fork draft unit tests for the parser changes so far`
 
 Limitations: fork cannot spawn further forks.
+
+---
+
+## CLI-Defined Agents (`--agents`)
+
+Pass JSON at launch — ephemeral, session-only, not saved to disk. Good for testing/automation. `prompt` = system prompt (equivalent to markdown body).
+
+```bash
+claude --agents '{
+  "code-reviewer": {
+    "description": "Expert code reviewer. Use proactively after code changes.",
+    "prompt": "You are a senior code reviewer. Focus on quality, security, best practices.",
+    "tools": ["Read", "Grep", "Glob", "Bash"],
+    "model": "sonnet"
+  }
+}'
+```
+
+Accepts same fields as file frontmatter: `description`, `prompt`, `tools`, `disallowedTools`, `model`, `permissionMode`, `mcpServers`, `hooks`, `maxTurns`, `skills`, `initialPrompt`, `memory`, `effort`, `background`, `isolation`, `color`.
+
+---
+
+## What Loads at Startup
+
+A non-fork subagent starts fresh — does NOT see conversation history, prior skills, or files already read. Initial context contains:
+
+- **System prompt** — agent's own prompt + environment details (NOT the full Claude Code system prompt)
+- **Task message** — delegation prompt Claude writes at handoff
+- **CLAUDE.md + memory hierarchy** — all levels the main conversation loads. *Explore and Plan skip this.*
+- **Git status** — snapshot from parent session start. *Explore and Plan skip this.*
+- **Preloaded skills** — full content of any skill in `skills:` field
+
+Implication: if a rule must reach the agent (e.g. "ignore `vendor/`"), restate it in the delegation prompt — agents don't inherit your conversation. Explore/Plan are the only agents that skip CLAUDE.md + git; no setting changes this.
+
+---
+
+## Resume Subagents
+
+Each invocation = new instance, fresh context. To continue prior work, ask Claude to resume — the resumed agent retains full history (tool calls, results, reasoning).
+
+```text
+Use the code-reviewer subagent to review the auth module
+[completes]
+Continue that review and now analyze the authorization logic
+```
+
+Transcripts persist per-session at `~/.claude/projects/{project}/{sessionId}/subagents/agent-{agentId}.jsonl`, unaffected by main-conversation compaction. Cleaned up per `cleanupPeriodDays` (default 30).
+
+---
+
+## Subagent vs Skill vs Main Conversation
+
+| Use | When |
+|-----|------|
+| **Main conversation** | Frequent back-and-forth, shared context across phases, quick targeted change, latency matters |
+| **Subagent** | Verbose output you don't need in main context, enforce tool restrictions, self-contained work returning a summary |
+| **Skill** (`context: fork` inverse) | Reusable prompt/workflow that should run in main context, not isolated. See skill-master. |
+
+Subagent = isolated context, own system prompt. Forked skill = inject skill content into a chosen agent. Both share the same underlying system.
 
 ---
 

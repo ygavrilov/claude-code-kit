@@ -5,9 +5,9 @@
 SKILL.md contains only:
 - Frontmatter
 - One-line role statement
-- `@file` references to supporting files
+- Markdown links to supporting files (e.g. `[workflow.md](workflow.md)`)
 
-Everything else lives in dedicated external files referenced via `@filename`. This keeps context load minimal and content organized.
+Everything else lives in dedicated external files referenced via markdown links (`[workflow.md](workflow.md)`). Claude reads them on demand when the link is relevant — this keeps context load minimal and content organized.
 
 ## One File Per Concern
 
@@ -22,7 +22,7 @@ Never mix concerns. A workflow file should not contain examples. An examples fil
 
 ## Reference Files Are Authoritative
 
-Supporting files (`@workflow.md`, `@examples.md`, etc.) are loaded at runtime. They must be self-contained and accurate — do not duplicate content between files.
+Supporting files (`[workflow.md](workflow.md)`, `[examples.md](examples.md)`, etc.) are loaded on demand when Claude follows the link. They must be self-contained and accurate — do not duplicate content between files.
 
 ## Minimal Tools
 

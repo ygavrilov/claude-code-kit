@@ -16,7 +16,7 @@ Ask the user:
 
 **Required:**
 - `name`: lowercase-with-hyphens, max 64 chars
-- `description`: keyword-rich, drives automatic invocation
+- `description`: keyword-rich, drives automatic invocation (combined with `when_to_use`, capped at 1,536 chars)
 
 **Invocation Control:**
 - `disable-model-invocation: true` — user-triggered only (deploy, commit, side effects)
@@ -25,12 +25,17 @@ Ask the user:
 **Execution Context:**
 - `context: fork` — isolated subagent
 - `agent: Explore|Plan|general-purpose` — which subagent (requires `context: fork`)
+- `effort: low|medium|high|xhigh|max` — override effort for this skill's turn
 
 **Tools:**
 - `allowed-tools` — e.g. `Read, Grep, Glob, Bash(git *)`
+- `disallowed-tools` — block tools while skill active (clears on next user message)
 
 **UX:**
 - `argument-hint` — e.g. `[issue-number]`, `[filename] [format]`
+- `arguments` — named args: `[issue, branch]` → use `$issue`, `$branch` in content
+- `when_to_use` — extra trigger phrases appended to description
+- `paths` — glob patterns limiting when skill auto-activates
 
 ### 3. Write Skill Content
 
@@ -38,7 +43,7 @@ Ask the user:
 
 **Task Skills** — numbered steps, often `context: fork` + `disable-model-invocation: true`
 
-**Dynamic Skills** — `$ARGUMENTS`, `$0`/`$1` for input; `` !`pwd` `` for shell injection; `@filename` for supporting files
+**Dynamic Skills** — `$ARGUMENTS`, `$0`/`$1` for input; `` !`pwd` `` for shell injection; `[filename](filename)` markdown links for supporting files
 
 ### 4. Choose Location
 
@@ -58,11 +63,12 @@ Move content to dedicated files (see principles.md for structure rules):
 ### 6. Validate
 
 - [ ] `name` is lowercase-with-hyphens
-- [ ] `description` is clear and keyword-rich
+- [ ] `description` is clear and keyword-rich; `description` + `when_to_use` under 1,536 chars
 - [ ] `allowed-tools` correct format
 - [ ] `context: fork` has actionable content (not just guidelines)
-- [ ] Arguments use `$ARGUMENTS` or `$N`
-- [ ] Supporting files referenced with `@filename`
+- [ ] Arguments use `$ARGUMENTS`, `$N`, or named `$arg` (with `arguments:` frontmatter)
+- [ ] `${CLAUDE_SKILL_DIR}` used for any bundled script paths
+- [ ] Supporting files referenced with markdown links `[filename](filename)`
 
 ---
 
@@ -88,4 +94,4 @@ Move content to dedicated files (see principles.md for structure rules):
 
 ---
 
-@examples.md
+See [examples.md](examples.md) for sample skill definitions.

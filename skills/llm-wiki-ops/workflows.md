@@ -53,7 +53,7 @@ Initialize a new wiki in the current directory.
 
 5. **Ask user about the codebase** — what repo will this wiki cover? Any known tech stack or focus areas?
 
-6. **Create `WIKI.md`** — use the schema template from `@schema-template.md`, fill in what's known.
+6. **Create `WIKI.md`** — use the schema template from [schema-template.md](schema-template.md), fill in what's known.
 
 7. **Append init entry to `wiki/log.md`**:
    ```

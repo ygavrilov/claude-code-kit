@@ -1,11 +1,11 @@
 {
-	"name": "ygavrilov-claude-code-skill-master-plugin",
-	"description": "Skill Master plugin for managing Claude Code skills",
+	"name": "ygavrilov-claude-code-masters",
+	"description": "Marketplace for the claude-code-masters plugin",
 	"plugins": [
 		{
-			"name": "skill-master",
-			"description": "Create and manage Claude Code skills",
-			"path": "."
+			"name": "claude-code-masters",
+			"source": "./",
+			"description": "Skills for creating Claude Code skills, agents, and plugins, plus LLM wiki management. Opinionated, based on official docs."
 		}
 	]
 }

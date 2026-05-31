@@ -48,6 +48,7 @@ Ask the user:
 - `color` — red, blue, green, yellow, purple, orange, pink, cyan
 - `effort` — low / medium / high / xhigh / max
 - `skills` — skill names to preload into context
+- `initialPrompt` — auto-submitted first turn when run as main session via `--agent`
 
 ### 3. Write the System Prompt
 
@@ -102,4 +103,4 @@ Single `.md` file — no directory needed. After writing, remind user: run `/age
 
 ---
 
-@examples.md
+See [examples.md](examples.md) for sample agent definitions.

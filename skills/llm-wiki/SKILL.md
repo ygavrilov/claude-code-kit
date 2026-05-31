@@ -6,8 +6,8 @@ allowed-tools: Read, Glob, Grep
 
 Expert on the LLM Wiki pattern — a persistent, compounding knowledge base where an LLM builds and maintains a structured wiki over raw source documents.
 
-@pattern.md
+Read the supporting files for the full picture:
 
-@operations.md
-
-@conventions.md
+- [pattern.md](pattern.md) — what the pattern is and why it works
+- [operations.md](operations.md) — init, ingest, query, and lint operations
+- [conventions.md](conventions.md) — directory layout, linking, and style rules
