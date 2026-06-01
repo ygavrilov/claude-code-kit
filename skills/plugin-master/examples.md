@@ -138,3 +138,83 @@ log-watcher/
   }
 ]
 ```
+
+---
+
+## Marketplace (single self-hosted plugin)
+
+One repo that is both the plugin and its marketplace. Plugin source is `./`.
+
+```
+rambo-plugins/                  # repo: jrambo/rambo-plugins
+├── .claude-plugin/
+│   ├── plugin.json             # the plugin manifest
+│   └── marketplace.json        # the marketplace listing
+└── skills/
+    └── extraction/
+        └── SKILL.md
+```
+
+```json
+// .claude-plugin/plugin.json
+{
+  "name": "trautman-tools",
+  "description": "Skills for extraction, recon, and after-action reports",
+  "version": "1.0.0",
+  "author": { "name": "Sam Trautman" }
+}
+```
+
+```json
+// .claude-plugin/marketplace.json
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "rambo-marketplace",
+  "description": "Survival tools forged in the field",
+  "owner": {
+    "name": "John Rambo",
+    "email": "rambo@hopereborn.example"
+  },
+  "plugins": [
+    {
+      "name": "trautman-tools",
+      "description": "Skills for extraction, recon, and after-action reports",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}
+```
+
+Install:
+
+```
+/plugin marketplace add jrambo/rambo-plugins
+/plugin install trautman-tools@rambo-marketplace
+```
+
+---
+
+## Marketplace (plugins in separate repos)
+
+A standalone catalog repo pointing at plugins hosted elsewhere. Each entry uses the `github` source form.
+
+```json
+// .claude-plugin/marketplace.json
+{
+  "name": "rambo-marketplace",
+  "owner": { "name": "John Rambo", "url": "https://github.com/jrambo" },
+  "plugins": [
+    {
+      "name": "trautman-tools",
+      "description": "Extraction and recon skills",
+      "source": { "source": "github", "repo": "jrambo/trautman-tools" }
+    },
+    {
+      "name": "teasle-lint",
+      "description": "Strict lint-on-save hooks",
+      "source": { "source": "github", "repo": "wteasle/teasle-lint" }
+    }
+  ]
+}
+```

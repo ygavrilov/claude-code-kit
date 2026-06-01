@@ -71,7 +71,10 @@ Debug checklist if something is missing:
 
 - Add `README.md` (install + usage)
 - Choose versioning strategy
-- Distribute via a [marketplace](claude-code-plugins-docs.md); private repo to keep internal
+- Distribute via a [marketplace](claude-code-plugins-docs.md): add `.claude-plugin/marketplace.json` alongside `plugin.json`
+  - `owner` must be an **object** (`name` + `email`/`url`), not a string — missing it fails validation
+  - Self-hosted plugin (same repo) → `"source": "./"`; plugin in another repo → `{ "source": "github", "repo": "owner/repo" }`
+  - Install: `/plugin marketplace add owner/repo` then `/plugin install plugin@marketplace-name`
 - Optional: submit to `claude-community` marketplace via the in-app form
 
 ---

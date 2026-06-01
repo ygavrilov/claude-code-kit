@@ -193,6 +193,57 @@ Same check run by the community review pipeline. Debug order:
 3. Distribute via a [plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces); private repo keeps it internal
 4. Test with others before wide release
 
+### Marketplace Manifest
+
+A marketplace is a repo with `.claude-plugin/marketplace.json` listing one or more plugins. Same dir as `plugin.json`.
+
+```json
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "rambo-marketplace",
+  "description": "Survival tools forged in the field",
+  "owner": {
+    "name": "John Rambo",
+    "email": "rambo@hopereborn.example"
+  },
+  "plugins": [
+    {
+      "name": "trautman-tools",
+      "description": "Skills for extraction, recon, and after-action reports",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}
+```
+
+| Field | Required | Purpose |
+|-------|----------|---------|
+| `name` | yes | Marketplace identifier. Used in install: `plugin@marketplace-name`. |
+| `owner` | **yes** | **Object**, not string. `name` + (`email` or `url`). Omitting it → `owner: Invalid input: expected object, received undefined`. |
+| `plugins` | yes | Array of plugin entries. |
+| `description` | no | Shown when browsing the marketplace. |
+| `$schema` | no | Editor validation/autocomplete. |
+
+**Plugin entry fields:** `name`, `description`, `source`, optional `category`. Per-plugin `version`/`author` live in each plugin's own `plugin.json` — not here.
+
+### Plugin `source` — the install gotcha
+
+- **Same repo as the marketplace** → `"source": "./"`. The plugin lives at the marketplace repo root.
+- **Different repo** → object form:
+  ```json
+  "source": { "source": "github", "repo": "jrambo/trautman-tools" }
+  ```
+
+Pointing the `github` form at the marketplace's OWN repo breaks install — use `"./"` for self-hosted plugins.
+
+### Installing from a Marketplace
+
+```
+/plugin marketplace add jrambo/rambo-plugins      # owner/repo (or https URL, or local path)
+/plugin install trautman-tools@rambo-marketplace  # plugin-name@marketplace-name
+```
+
 ### Community Marketplaces
 
 - `claude-plugins-official` — curated by Anthropic, available in every install. No application process.
