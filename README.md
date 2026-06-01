@@ -1,45 +1,52 @@
-# Claude Code Skill Master Plugin
+# Claude Code Masters
 
-A Claude Code plugin that adds the **Skill Master** skill — a guided assistant for creating and editing Claude Code skills.
+A Claude Code marketplace shipping the **claude-code-masters** plugin: five skills for building and managing Claude Code skills, agents, plugins, and LLM wikis. Opinionated, based on official docs.
 
-## What it does
+## Skills
 
-Skill Master walks you through building properly structured Claude Code skills. It asks about your skill's purpose, invocation method, tools, and arguments, then generates a valid `SKILL.md` with correct frontmatter and content.
-
-It covers:
-
-- Creating new skills (reference, task, dynamic, or research patterns)
-- Editing existing skills
-- Choosing the right frontmatter fields (`context`, `allowed-tools`, `disable-model-invocation`, etc.)
-- Placing skills in personal (`~/.claude/skills/`) or project (`.claude/skills/`) directories
-- Splitting large skills into supporting files
+| Skill           | Purpose                                       |
+| --------------- | --------------------------------------------- |
+| `skill-master`  | Create/edit Claude Code skills                |
+| `agent-master`  | Create/edit Claude Code subagents             |
+| `plugin-master` | Create/edit plugins; package & distribute     |
+| `llm-wiki`      | Reference knowledge on the LLM wiki pattern   |
+| `llm-wiki-ops`  | Run LLM wiki ops (init, ingest) on a codebase |
 
 ## Install
 
-Add to your Claude Code plugins:
+Add the marketplace, then install the plugin:
 
 ```
-claude plugin add /path/to/claude-code-skill-master-plugin
+/plugin marketplace add ygavrilov/claude-code-skill-master-plugin
+/plugin install claude-code-masters@ygavrilov-claude-code-masters
 ```
 
 ## Usage
 
-Once installed, invoke the skill:
+Invoke a skill directly:
 
 ```
 /skill-master
+/agent-master
+/plugin-master
+/llm-wiki
+/llm-wiki-ops
 ```
 
-Or describe what you need in natural language — Claude will invoke it automatically when you mention creating or editing a skill.
+Or describe the task in natural language — Claude invokes the matching skill automatically.
 
 ## Structure
 
 ```
-plugin.json                          # Plugin metadata
+.claude-plugin/
+  plugin.json          # Plugin metadata
+  marketplace.json     # Marketplace listing
 skills/
-  skill-master/
-    SKILL.md                         # Skill definition and instructions
-    claude-code-skills-docs.md       # Reference documentation
+  skill-master/        # SKILL.md + supporting docs (one per skill)
+  agent-master/
+  plugin-master/
+  llm-wiki/
+  llm-wiki-ops/
 ```
 
 ## Author

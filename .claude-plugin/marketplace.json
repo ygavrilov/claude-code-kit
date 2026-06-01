@@ -1,0 +1,21 @@
+{
+	"name": "ygavrilov-claude-code-masters",
+	"owner": {
+		"name": "Yevgeniy Gavrilov",
+		"email": "claude-code@gavrilov.kz"
+	},
+	"plugins": [
+		{
+			"name": "claude-code-masters",
+			"source": {
+				"source": "github",
+				"repo": "ygavrilov/claude-code-skill-master-plugin"
+			},
+			"description": "Skills for creating Claude Code skills, agents, and plugins, plus LLM wiki management. Opinionated, based on official docs.",
+			"version": "3.3.0",
+			"author": {
+				"name": "Yevgeniy Gavrilov"
+			}
+		}
+	]
+}
