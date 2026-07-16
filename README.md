@@ -17,7 +17,7 @@ A Claude Code marketplace shipping the **claude-code-kit** plugin: five skills f
 Add the marketplace, then install the plugin:
 
 ```
-/plugin marketplace add ygavrilov/claude-code-skill-master-plugin
+/plugin marketplace add ygavrilov/claude-code-kit
 /plugin install claude-code-kit@ygavrilov-claude-code-masters
 ```
 
