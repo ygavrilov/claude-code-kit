@@ -1,6 +1,6 @@
-# Claude Code Masters
+# Claude Code Kit
 
-A Claude Code marketplace shipping the **claude-code-masters** plugin: five skills for building and managing Claude Code skills, agents, plugins, and LLM wikis. Opinionated, based on official docs.
+A Claude Code marketplace shipping the **claude-code-kit** plugin: five skills for building and managing Claude Code skills, agents, plugins, and LLM wikis. Opinionated, based on official docs.
 
 ## Skills
 
@@ -18,7 +18,7 @@ Add the marketplace, then install the plugin:
 
 ```
 /plugin marketplace add ygavrilov/claude-code-skill-master-plugin
-/plugin install claude-code-masters@ygavrilov-claude-code-masters
+/plugin install claude-code-kit@ygavrilov-claude-code-masters
 ```
 
 ## Usage

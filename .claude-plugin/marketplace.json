@@ -8,7 +8,7 @@
 	},
 	"plugins": [
 		{
-			"name": "claude-code-masters",
+			"name": "claude-code-kit",
 			"description": "Skills for creating Claude Code skills, agents, and plugins, plus LLM wiki management. Opinionated, based on official docs.",
 			"source": "./",
 			"category": "productivity"
