@@ -1,6 +1,6 @@
 {
 	"$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-	"name": "ygavrilov-claude-code-masters",
+	"name": "ygavrilov-claude-code-kit",
 	"description": "Skills for creating Claude Code skills, agents, and plugins, plus LLM wiki management. Opinionated, based on official docs.",
 	"owner": {
 		"name": "Yevgeniy Gavrilov",
