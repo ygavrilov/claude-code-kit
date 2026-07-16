@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Blocks commits that touch skills/ without bumping .claude-plugin/plugin.json version.
+set -euo pipefail
+
+PLUGIN_JSON=".claude-plugin/plugin.json"
+
+staged_files=$(git diff --cached --name-only --diff-filter=ACMR)
+
+touches_skills=false
+while IFS= read -r f; do
+	[ -z "$f" ] && continue
+	case "$f" in
+		skills/*) touches_skills=true ;;
+	esac
+done <<< "$staged_files"
+
+if [ "$touches_skills" = false ]; then
+	exit 0
+fi
+
+old_version=$(git show "HEAD:$PLUGIN_JSON" 2>/dev/null | grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' | grep -o '"[^"]*"$' | tr -d '"')
+new_version=$(grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' "$PLUGIN_JSON" 2>/dev/null | grep -o '"[^"]*"$' | tr -d '"')
+
+if [ "$old_version" = "$new_version" ]; then
+	echo "ERROR: staged changes touch skills/ but $PLUGIN_JSON version was not bumped (still $old_version)." >&2
+	echo "Bump the \"version\" field in $PLUGIN_JSON and stage it before committing." >&2
+	exit 1
+fi
+
+exit 0
