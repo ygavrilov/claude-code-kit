@@ -1,7 +1,7 @@
 {
 	"name": "claude-code-kit",
 	"description": "A plugin providing essential skills for creating agents, skills and managing llm wiki. While agents and skills are based on the official documentation they are highly opinionated.",
-	"version": "3.5.0",
+	"version": "3.5.1",
 	"author": {
 		"name": "Yevgeniy Gavrilov"
 	}

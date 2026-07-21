@@ -52,7 +52,7 @@ Available without creating anything — Claude delegates automatically, and they
 | `statusline-setup` | Sonnet | — | Configures status line (`/statusline`) |
 | `claude-code-guide` | Haiku | — | Answers Claude Code feature questions |
 
-Subagents cannot spawn other subagents (no nesting). Use chaining from the main conversation or Skills instead.
+Subagents inherit the `Agent` tool, so a subagent can spawn nested subagents. To prevent a specific subagent from spawning others, omit `Agent` from its `tools` or add it to `disallowedTools`.
 
 ---
 
@@ -74,7 +74,7 @@ Subagents cannot spawn other subagents (no nesting). Use chaining from the main 
 
 If both are set: `disallowedTools` applied first, then `tools` resolves against remainder. A tool in both is removed.
 
-**Unavailable to subagents** (depend on main UI/session state — listing in `tools` has no effect): `Agent`, `AskUserQuestion`, `EnterPlanMode`, `ScheduleWakeup`, `WaitForMcpServers`, and `ExitPlanMode` (unless `permissionMode: plan`).
+**Unavailable to subagents** (depend on main UI/session state — listing in `tools` has no effect): `AskUserQuestion`, `EnterPlanMode`, `ScheduleWakeup`, `WaitForMcpServers`, and `ExitPlanMode` (unless `permissionMode: plan`). (`Agent` IS inherited — subagents can spawn nested subagents.)
 
 **Tool syntax examples:**
 ```yaml
@@ -83,7 +83,7 @@ tools: Read, Edit, Bash(git *), Bash(npm test)
 disallowedTools: Write, Edit
 ```
 
-**Agent spawning restriction** (only relevant when agent runs as main thread via `--agent`):
+**Agent spawning restriction** (`Agent` is inherited by any subagent — use these to control nested spawning):
 ```yaml
 tools: Agent(worker, researcher), Read, Bash   # only these subagent types
 tools: Agent, Read, Bash                        # any subagent
@@ -303,7 +303,7 @@ A fork inherits the full conversation context instead of starting fresh — same
 | Model | Same as main session | From agent's `model` field |
 | Prompt cache | Shared with main session | Separate cache |
 
-Start a fork manually: `/fork draft unit tests for the parser changes so far`
+Start a fork manually: `/subtask draft unit tests for the parser changes so far` (named `/fork` before v2.1.212)
 
 Limitations: fork cannot spawn further forks.
 

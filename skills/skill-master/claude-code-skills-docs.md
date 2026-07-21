@@ -78,7 +78,7 @@ All fields are optional (description recommended).
 | `arguments`                | Named positional args for `$name` substitution. Space-separated string or YAML list.                                 |
 | `disable-model-invocation` | `true` → only you can invoke. Claude can't trigger it, description not in context. Default: `false`.                 |
 | `user-invocable`           | `false` → hide from `/` menu; only Claude can invoke. Default: `true`.                                               |
-| `allowed-tools`            | Tools usable without approval while skill is active. Space- or comma-separated string or YAML list.                  |
+| `allowed-tools`            | Tools pre-approved (no prompt) for the turn that invokes the skill. Grant clears on your next message. Space- or comma-separated string or YAML list. |
 | `disallowed-tools`         | Tools removed from Claude's pool while skill is active. Clears on next user message.                                 |
 | `model`                    | Model override for this skill's turn. Reverts to session model on next prompt.                                       |
 | `effort`                   | Effort level override: `low`, `medium`, `high`, `xhigh`, `max`. Reverts to session default after.                   |
@@ -114,6 +114,8 @@ Format:
 - Wildcarded: `Bash(git *)`, `Bash(npm *)`
 - Specific: `Bash(git status)`, `Bash(ls -la)`
 
+The grant covers only the turn that invokes the skill and clears on your next message; invoking the skill again re-applies it for that turn. To pre-approve tools for the whole session, add allow rules to your permission settings instead.
+
 For project skills, takes effect after you accept the workspace trust dialog.
 
 #### `disallowed-tools`
@@ -146,7 +148,7 @@ The Explore and Plan agents skip CLAUDE.md to keep context small. Other agent ty
 
 ## Skill Content Lifecycle
 
-When invoked, the rendered `SKILL.md` enters the conversation as a single message and stays for the rest of the session. Claude Code does NOT re-read the skill file on later turns.
+When invoked, the rendered `SKILL.md` enters the conversation as a single message and stays for the rest of the session. This persistence applies to the skill's instructions, not its permissions: an `allowed-tools` grant clears on your next message. Claude Code does NOT re-read the skill file on later turns.
 
 **Auto-compaction:** After context is summarized, the most recent invocation of each skill is re-attached (first 5,000 tokens each). All re-attached skills share a 25,000-token combined budget, filled starting from most-recently-invoked. Older skills may be dropped if many were invoked.
 
