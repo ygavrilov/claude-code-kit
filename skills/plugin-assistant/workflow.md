@@ -43,7 +43,7 @@ Plugin root holds `.claude-plugin/plugin.json`:
 | `bin/` | Executables added to Bash `PATH` while enabled |
 | `settings.json` | Default settings (`agent`, `subagentStatusLine` only) |
 
-Author the components themselves with [skill-master](../skill-master/SKILL.md) (skills) and [agent-master](../agent-master/SKILL.md) (agents). Defer to [claude-code-plugins-docs.md](claude-code-plugins-docs.md) for full schemas.
+Author the components themselves with [skill-assistant](../skill-assistant/SKILL.md) (skills) and [agent-assistant](../agent-assistant/SKILL.md) (agents). Defer to [claude-code-plugins-docs.md](claude-code-plugins-docs.md) for full schemas.
 
 ### 4. Test Locally
 

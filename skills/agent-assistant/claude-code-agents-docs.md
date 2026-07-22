@@ -362,7 +362,7 @@ Transcripts persist per-session at `~/.claude/projects/{project}/{sessionId}/sub
 |-----|------|
 | **Main conversation** | Frequent back-and-forth, shared context across phases, quick targeted change, latency matters |
 | **Subagent** | Verbose output you don't need in main context, enforce tool restrictions, self-contained work returning a summary |
-| **Skill** (`context: fork` inverse) | Reusable prompt/workflow that should run in main context, not isolated. See skill-master. |
+| **Skill** (`context: fork` inverse) | Reusable prompt/workflow that should run in main context, not isolated. See skill-assistant. |
 
 Subagent = isolated context, own system prompt. Forked skill = inject skill content into a chosen agent. Both share the same underlying system.
 

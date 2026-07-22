@@ -1,5 +1,5 @@
 ---
-name: agent-master
+name: agent-assistant
 description: Create or edit Claude Code subagent (agent) definition files based on official documentation. Use when the user wants to create a new subagent, modify an existing agent, or needs guidance on agent frontmatter fields, tool access, permission modes, or memory configuration.
 allowed-tools: Read, Write, Edit, Bash(find *), Bash(ls *), Bash(cat *), Bash(mkdir *)
 ---

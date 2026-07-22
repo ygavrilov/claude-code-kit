@@ -4,13 +4,13 @@ A Claude Code marketplace shipping the **claude-code-kit** plugin: five skills f
 
 ## Skills
 
-| Skill           | Purpose                                                  |
-| --------------- | --------------------------------------------------------- |
-| `skill-master`  | Create/edit Claude Code skills                            |
-| `agent-master`  | Create/edit Claude Code subagents                         |
-| `plugin-master` | Create/edit plugins; package & distribute                 |
-| `llm-wiki`      | Design, set up, and maintain an LLM wiki knowledge base    |
-| `llm-wiki-ops`  | Run LLM wiki ops (init, ingest) on a codebase              |
+| Skill             | Purpose                                                  |
+| ----------------- | --------------------------------------------------------- |
+| `skill-assistant`  | Create/edit Claude Code skills                            |
+| `agent-assistant`  | Create/edit Claude Code subagents                         |
+| `plugin-assistant` | Create/edit plugins; package & distribute                 |
+| `llm-wiki`        | Design, set up, and maintain an LLM wiki knowledge base    |
+| `llm-wiki-ops`    | Run LLM wiki ops (init, ingest) on a codebase              |
 
 ## Install
 
@@ -26,14 +26,14 @@ Add the marketplace, then install the plugin:
 Invoke a skill directly:
 
 ```
-/skill-master
-/agent-master
-/plugin-master
+/skill-assistant
+/agent-assistant
+/plugin-assistant
 /llm-wiki
 /llm-wiki-ops
 ```
 
-If another installed plugin has a same-named skill, qualify it: `/claude-code-kit:skill-master`.
+If another installed plugin has a same-named skill, qualify it: `/claude-code-kit:skill-assistant`.
 
 Or describe the task in natural language — Claude invokes the matching skill automatically.
 
@@ -44,9 +44,9 @@ Or describe the task in natural language — Claude invokes the matching skill a
   plugin.json                 # Plugin metadata (name, version, author)
   marketplace.json            # Marketplace listing
 skills/
-  skill-master/                # SKILL.md + supporting docs (one per skill, same layout)
-  agent-master/
-  plugin-master/
+  skill-assistant/              # SKILL.md + supporting docs (one per skill, same layout)
+  agent-assistant/
+  plugin-assistant/
   llm-wiki/
   llm-wiki-ops/
 docs-upstream/                # Snapshots of official Claude Code docs, diffed nightly for drift

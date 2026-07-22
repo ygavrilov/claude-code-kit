@@ -23,7 +23,7 @@ A plugin bundles related functionality shipped and versioned together. If compon
 
 ## Defer Component Authoring
 
-A plugin is a package. The skills, agents, and hooks inside it are authored by their own rules — use [skill-master](../skill-master/SKILL.md) and [agent-master](../agent-master/SKILL.md). Plugin-master handles the manifest, directory layout, packaging, and distribution, not the internals of each component.
+A plugin is a package. The skills, agents, and hooks inside it are authored by their own rules — use [skill-assistant](../skill-assistant/SKILL.md) and [agent-assistant](../agent-assistant/SKILL.md). Plugin-assistant handles the manifest, directory layout, packaging, and distribution, not the internals of each component.
 
 ## Minimal Components
 

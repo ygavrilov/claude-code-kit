@@ -1,5 +1,5 @@
 ---
-name: skill-master
+name: skill-assistant
 description: Create or edit Claude Code skills based on official documentation. Use when the user wants to create a new skill, modify an existing skill, or needs guidance on skill structure and frontmatter fields.
 allowed-tools: Read, Write, Edit, Bash(find *), Bash(ls *), Bash(cat *), Bash(mkdir *)
 ---

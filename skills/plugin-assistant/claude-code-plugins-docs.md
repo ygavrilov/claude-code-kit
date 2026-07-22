@@ -76,7 +76,7 @@ All component dirs are optional. `skills/` alone is a valid plugin.
 
 ### Skills
 
-`skills/<name>/SKILL.md`. Folder name → skill name, namespaced (`code-review/` in `my-plugin` → `/my-plugin:code-review`). Authored per skill rules — see skill-master. Run `/reload-plugins` after adding.
+`skills/<name>/SKILL.md`. Folder name → skill name, namespaced (`code-review/` in `my-plugin` → `/my-plugin:code-review`). Authored per skill rules — see skill-assistant. Run `/reload-plugins` after adding.
 
 ```
 my-plugin/
@@ -87,7 +87,7 @@ my-plugin/
 
 ### Agents
 
-`agents/<name>.md`. Plugin subagents IGNORE `hooks`, `mcpServers`, `permissionMode` (security). Subfolders become part of the scoped identifier: `agents/review/security.md` → `my-plugin:review:security`. Authored per agent rules — see agent-master.
+`agents/<name>.md`. Plugin subagents IGNORE `hooks`, `mcpServers`, `permissionMode` (security). Subfolders become part of the scoped identifier: `agents/review/security.md` → `my-plugin:review:security`. Authored per agent rules — see agent-assistant.
 
 ### Hooks
 

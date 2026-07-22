@@ -1,5 +1,5 @@
 ---
-name: plugin-master
+name: plugin-assistant
 description: Create or edit Claude Code plugins based on official documentation. Use when the user wants to create a new plugin, package skills/agents/hooks/MCP servers into a plugin, write a plugin manifest, or convert standalone .claude/ configuration into a distributable plugin.
 allowed-tools: Read, Write, Edit, Bash(find *), Bash(ls *), Bash(cat *), Bash(mkdir *)
 ---
@@ -14,6 +14,6 @@ Before advising or writing files, read the supporting files:
 
 Guide, don't assume — ask questions to understand requirements. Educate briefly on structure choices. Validate structure before writing files. Be concise.
 
-For authoring the skills, agents, or hooks a plugin bundles, defer to the dedicated assistants: [skill-master](../skill-master/SKILL.md) for skills, [agent-master](../agent-master/SKILL.md) for agents.
+For authoring the skills, agents, or hooks a plugin bundles, defer to the dedicated assistants: [skill-assistant](../skill-assistant/SKILL.md) for skills, [agent-assistant](../agent-assistant/SKILL.md) for agents.
 
 Ask the user: **What plugin would you like to create or edit?**
