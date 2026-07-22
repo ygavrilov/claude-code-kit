@@ -4,13 +4,13 @@ A Claude Code marketplace shipping the **claude-code-kit** plugin: five skills f
 
 ## Skills
 
-| Skill           | Purpose                                       |
-| --------------- | --------------------------------------------- |
-| `skill-master`  | Create/edit Claude Code skills                |
-| `agent-master`  | Create/edit Claude Code subagents             |
-| `plugin-master` | Create/edit plugins; package & distribute     |
-| `llm-wiki`      | Reference knowledge on the LLM wiki pattern   |
-| `llm-wiki-ops`  | Run LLM wiki ops (init, ingest) on a codebase |
+| Skill           | Purpose                                                  |
+| --------------- | --------------------------------------------------------- |
+| `skill-master`  | Create/edit Claude Code skills                            |
+| `agent-master`  | Create/edit Claude Code subagents                         |
+| `plugin-master` | Create/edit plugins; package & distribute                 |
+| `llm-wiki`      | Design, set up, and maintain an LLM wiki knowledge base    |
+| `llm-wiki-ops`  | Run LLM wiki ops (init, ingest) on a codebase              |
 
 ## Install
 
