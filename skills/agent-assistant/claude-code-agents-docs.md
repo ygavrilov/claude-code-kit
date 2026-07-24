@@ -48,11 +48,11 @@ Available without creating anything — Claude delegates automatically, and they
 |-------|-------|-------|---------|
 | `Explore` | Haiku | Read-only (no Write/Edit) | File discovery, code search. Skips CLAUDE.md + git status |
 | `Plan` | Inherit | Read-only (no Write/Edit) | Codebase research during plan mode. Skips CLAUDE.md + git status |
-| `general-purpose` | Inherit | All | Complex multi-step tasks needing exploration + action |
+| `general-purpose` | Inherit | Every tool available to subagents | Complex multi-step tasks needing exploration + action |
 | `statusline-setup` | Sonnet | — | Configures status line (`/statusline`) |
 | `claude-code-guide` | Haiku | — | Answers Claude Code feature questions |
 
-Subagents inherit the `Agent` tool, so a subagent can spawn nested subagents. To prevent a specific subagent from spawning others, omit `Agent` from its `tools` or add it to `disallowedTools`.
+A subagent cannot spawn subagents by default — the `Agent` tool is withheld unless nested spawning is enabled. See [Tool Access](#tool-access).
 
 ---
 
@@ -74,7 +74,11 @@ Subagents inherit the `Agent` tool, so a subagent can spawn nested subagents. To
 
 If both are set: `disallowedTools` applied first, then `tools` resolves against remainder. A tool in both is removed.
 
-**Unavailable to subagents** (depend on main UI/session state — listing in `tools` has no effect): `AskUserQuestion`, `EnterPlanMode`, `ScheduleWakeup`, `WaitForMcpServers`, and `ExitPlanMode` (unless `permissionMode: plan`). (`Agent` IS inherited — subagents can spawn nested subagents.)
+**Tool pool** — a subagent inherits the built-in and MCP tools of the main conversation, narrowed by two filters. A [fork](#fork-subagents-experimental) skips both and receives the main conversation's exact pool.
+
+*Filter 1 — removed from every subagent* (listing them in `tools` has no effect): `Agent` (until nested spawning is enabled), `AskUserQuestion`, `EndConversation`, `EnterPlanMode`, `ExitPlanMode` (unless `permissionMode: plan`), `ScheduleWakeup`, `TaskOutput`, `WaitForMcpServers`, `Workflow`.
+
+*Filter 2 — background subagents* (the default). A background subagent keeps every MCP tool but only these built-ins: `Read`, `Grep`, `Glob`, `Bash`, `PowerShell`, `Edit`, `Write`, `NotebookEdit`, `WebFetch`, `WebSearch`, `TodoWrite`, `Skill`, `ToolSearch`, `EnterWorktree`, `ExitWorktree`, `Monitor`, `TaskStop`, `SendMessage`, `Artifact`. Every other built-in is dropped, whether inherited or listed in `tools` — the same definition can resolve to different tools in foreground and background. Agent-team teammates additionally keep `TaskCreate`, `TaskGet`, `TaskList`, `TaskUpdate`, `CronCreate`, `CronDelete`, `CronList`.
 
 **Tool syntax examples:**
 ```yaml
@@ -83,11 +87,17 @@ tools: Read, Edit, Bash(git *), Bash(npm test)
 disallowedTools: Write, Edit
 ```
 
-**Agent spawning restriction** (`Agent` is inherited by any subagent — use these to control nested spawning):
+**Nested spawning** — off by default: Claude Code withholds `Agent` from every subagent except a fork. Enable it by setting the number of layers allowed below the main conversation:
+
+```json
+{ "env": { "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "2" } }
+```
+
+With nesting on, control spawning per agent:
 ```yaml
-tools: Agent(worker, researcher), Read, Bash   # only these subagent types
-tools: Agent, Read, Bash                        # any subagent
-# omit Agent entirely = cannot spawn subagents
+tools: Agent, Read, Bash                        # this subagent may spawn subagents
+disallowedTools: Agent                          # this subagent may not
+tools: Agent(worker, researcher), Read, Bash    # type list applies only to `claude --agent` main threads
 ```
 (Tool `Task` renamed to `Agent` in v2.1.63; `Task(...)` still works as alias.)
 
@@ -99,7 +109,7 @@ tools: Agent, Read, Bash                        # any subagent
 | `sonnet` | claude-sonnet alias |
 | `opus` | claude-opus alias |
 | `haiku` | claude-haiku alias |
-| Full ID | e.g. `claude-sonnet-4-6`, `claude-opus-4-7` |
+| Full ID | e.g. `claude-opus-5`, `claude-sonnet-5` |
 
 Model resolution order (highest wins):
 1. `CLAUDE_CODE_SUBAGENT_MODEL` env var
@@ -135,6 +145,8 @@ When `memory` is set:
 - First 200 lines or 25KB of `MEMORY.md` injected into context
 - `Read`, `Write`, `Edit` tools auto-enabled for memory management
 
+Subagent memory is part of auto memory. With `autoMemoryEnabled: false` or `CLAUDE_CODE_DISABLE_AUTO_MEMORY` set, the `memory` field has no effect — the agent launches without memory instructions or memory tool access.
+
 **Best practice:** Include in system prompt:
 ```
 Update your agent memory as you discover codepaths, patterns, library
@@ -149,7 +161,7 @@ locations, and key architectural decisions.
 | `skills` | list | Skill names to preload into context at startup. Full skill content injected — not just made available |
 | `mcpServers` | list | MCP servers for this agent. Inline definitions (scoped to agent) or string references (shared from session) |
 | `hooks` | map | Lifecycle hooks scoped to this agent |
-| `background` | bool | Always run as background task. Default: false |
+| `background` | bool | `true` → always run as a background task. Unset → Claude chooses, and runs subagents in the background by default |
 | `effort` | string | `low`, `medium`, `high`, `xhigh`, `max` — overrides session effort level |
 | `isolation` | string | `worktree` — run in isolated git worktree copy, auto-cleaned if no changes made |
 | `color` | string | Display color: `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, `cyan` |
@@ -263,11 +275,13 @@ Full skill content injected at startup. Subagents don't inherit skills from pare
 
 ## Foreground vs Background
 
-| | Foreground | Background |
-|-|------------|------------|
+| | Foreground | Background (default) |
+|-|------------|----------------------|
 | Execution | Blocks until complete | Concurrent with main conversation |
-| Permission prompts | Passed through to user | Pre-approved before launch, then auto-denied |
-| AskUserQuestion | Passed through | Fails silently, agent continues |
+| Built-in tools | Full subagent pool | Narrower set — see [Tool Access](#tool-access) |
+| Permission prompts | Passed through to user | Surfaced in the main session, naming the subagent |
+
+Subagents run in the background by default; Claude runs one in the foreground when it needs the result before continuing. Forks are exempt from the narrower background tool set.
 
 Force background: ask Claude "run this in the background" or press `Ctrl+B`.
 

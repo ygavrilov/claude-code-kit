@@ -45,6 +45,7 @@ my-plugin/
 │   └── plugin.json     ← manifest ONLY
 ├── skills/             ← all other dirs at ROOT
 ├── agents/
+├── workflows/
 ├── hooks/
 ├── .mcp.json
 ├── .lsp.json
@@ -53,7 +54,7 @@ my-plugin/
 └── settings.json
 ```
 
-**Common mistake:** never put `skills/`, `agents/`, `hooks/`, `commands/` inside `.claude-plugin/`. Only `plugin.json` goes there; everything else at plugin root.
+**Common mistake:** never put `skills/`, `agents/`, `workflows/`, `hooks/`, `commands/` inside `.claude-plugin/`. Only `plugin.json` goes there; everything else at plugin root.
 
 | Directory / file | Location | Purpose |
 |------------------|----------|---------|
@@ -61,6 +62,7 @@ my-plugin/
 | `skills/` | root | Skills as `<name>/SKILL.md` directories |
 | `commands/` | root | Skills as flat `.md` files (legacy — use `skills/` for new plugins) |
 | `agents/` | root | Custom agent definitions (`<name>.md`) |
+| `workflows/` | root | Workflow script files |
 | `hooks/hooks.json` | root | Event handlers |
 | `.mcp.json` | root | MCP server configs |
 | `.lsp.json` | root | LSP server configs (code intelligence) |
@@ -76,7 +78,7 @@ All component dirs are optional. `skills/` alone is a valid plugin.
 
 ### Skills
 
-`skills/<name>/SKILL.md`. Folder name → skill name, namespaced (`code-review/` in `my-plugin` → `/my-plugin:code-review`). Authored per skill rules — see skill-assistant. Run `/reload-plugins` after adding.
+`skills/<name>/SKILL.md`. Folder name → skill name, namespaced (`code-review/` in `my-plugin` → `/my-plugin:code-review`); a frontmatter `name` replaces that last segment (`name: fancy` → `/my-plugin:fancy`). Authored per skill rules — see skill-assistant. Run `/reload-plugins` after adding.
 
 ```
 my-plugin/

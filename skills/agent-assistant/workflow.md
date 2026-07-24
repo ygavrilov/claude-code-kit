@@ -27,7 +27,7 @@ Ask the user:
 **Model:**
 - `model: inherit` — same as main conversation (default)
 - `model: sonnet` / `opus` / `haiku` — alias
-- Full ID: `claude-sonnet-4-6`, `claude-opus-4-7`
+- Full ID: `claude-opus-5`, `claude-sonnet-5`
 
 **Permission Mode:**
 - `permissionMode: default` — standard prompts

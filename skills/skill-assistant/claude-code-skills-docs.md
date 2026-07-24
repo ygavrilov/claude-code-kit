@@ -37,10 +37,12 @@ skill-name/
 |:-------------------------------------------------|:---------------------------------|:-------------------------------------------------|
 | `~/.claude/skills/` or `.claude/skills/`         | Directory name                   | `.claude/skills/deploy-staging/` → `/deploy-staging` |
 | `.claude/commands/`                              | File name without extension      | `.claude/commands/deploy.md` → `/deploy`         |
-| Plugin `skills/` subdirectory                    | Directory name, plugin-namespaced| `my-plugin/skills/review/` → `/my-plugin:review` |
+| Plugin `skills/` subdirectory                    | Frontmatter `name` or directory name, plugin-namespaced | `my-plugin/skills/review/` → `/my-plugin:review`, or `/my-plugin:fancy` with `name: fancy` |
 | Plugin root `SKILL.md`                           | Frontmatter `name` field         | `name: review` → `/my-plugin:review`             |
 
-The `name` frontmatter field sets the display label in skill listings — it does NOT change the invokable command, except for plugin-root skills.
+In personal and project skills the `name` frontmatter field sets only the display label in skill listings — the command still comes from the directory or file name.
+
+In a **plugin** skill, `name` replaces the last segment of the command and the plugin prefix stays: `my-plugin/skills/review/SKILL.md` with `name: fancy` → `/my-plugin:fancy`. The bare `/fancy` also invokes it unless another command already uses that name. For a plugin-root `SKILL.md` there is no skill directory, so `name` supplies the whole final segment, falling back to the plugin directory name.
 
 ## SKILL.md Structure
 
@@ -69,9 +71,11 @@ When explaining code, always include:
 
 All fields are optional (description recommended).
 
+Boolean fields accept `yes`, `no`, `on`, `off`, `1`, and `0` in any letter case, in addition to `true` and `false`.
+
 | Field                      | Description                                                                                                           |
 |:---------------------------|:----------------------------------------------------------------------------------------------------------------------|
-| `name`                     | Display name in skill listings. Does NOT change invocation command (except plugin-root). Defaults to directory name.  |
+| `name`                     | Display name in skill listings. In plugin skills it also sets the last segment of the command. Defaults to directory name. |
 | `description`              | What the skill does and when to use it. Combined with `when_to_use`, capped at 1,536 chars in skill listing.          |
 | `when_to_use`              | Additional trigger phrases/examples for Claude. Appended to `description`. Counts toward 1,536-char cap.             |
 | `argument-hint`            | Hint during autocomplete. Example: `[issue-number]` or `[filename] [format]`.                                        |
@@ -84,6 +88,7 @@ All fields are optional (description recommended).
 | `effort`                   | Effort level override: `low`, `medium`, `high`, `xhigh`, `max`. Reverts to session default after.                   |
 | `context`                  | `fork` → run in isolated subagent context.                                                                            |
 | `agent`                    | Subagent type when `context: fork`. Built-ins: `Explore`, `Plan`, `general-purpose`. Or custom agent name.           |
+| `background`               | Only with `context: fork`. `false` → wait for the fork's result in the invoking turn instead of running it in the background. Default: `true`. |
 | `hooks`                    | Hooks scoped to this skill's lifecycle.                                                                               |
 | `paths`                    | Glob patterns limiting when skill auto-activates. Comma-separated string or YAML list.                               |
 | `shell`                    | Shell for `!` blocks: `bash` (default) or `powershell`.                                                              |
@@ -128,6 +133,8 @@ disallowed-tools: AskUserQuestion
 
 Restriction clears when user sends next message.
 
+Like deny rules, `disallowed-tools` cannot remove `EndConversation` while any other tool remains.
+
 #### `context: fork`
 
 Runs skill in isolated subagent. Skill content becomes the subagent's prompt. No access to conversation history.
@@ -135,6 +142,17 @@ Runs skill in isolated subagent. Skill content becomes the subagent's prompt. No
 **Use when:** self-contained task, isolation needed, explicit step-by-step instructions.
 
 **Don't use when:** skill contains only guidelines (subagent receives no actionable task).
+
+**Background by default.** The forked subagent runs in the background — you keep working and its result arrives when it completes. Set `background: false` to wait for the result in the invoking turn instead. Claude Code also waits, even without `background: false`, in cases like these:
+
+- Non-interactive mode (`-p` flag or the Agent SDK)
+- `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1`
+- The same forked skill is already running from an earlier invocation
+- A scheduled task fires with the skill as its prompt
+
+A backgrounded fork runs with the narrower tool set that applies to background subagents (the skill's subagent is a regular agent type, so the conversation-fork exemption doesn't cover it). If a step needs a tool outside that set, use `background: false`.
+
+A background fork applies its edits outside the session's checkpoints, so `/rewind` doesn't undo them — use git to revert.
 
 The Explore and Plan agents skip CLAUDE.md to keep context small. Other agent types load CLAUDE.md.
 
@@ -167,6 +185,7 @@ If a skill stops influencing behavior after compaction, re-invoke it.
 | `${CLAUDE_SESSION_ID}` | Current session ID                                                         |
 | `${CLAUDE_EFFORT}`     | Current effort level: `low`, `medium`, `high`, `xhigh`, `max`             |
 | `${CLAUDE_SKILL_DIR}`  | Directory containing this `SKILL.md`. Use to reference bundled scripts.    |
+| `${CLAUDE_PROJECT_DIR}`| Project root — same path hooks and MCP servers receive. Use for project-local scripts, e.g. `${CLAUDE_PROJECT_DIR}/.claude/hooks/helper.sh` |
 
 Multi-word args: wrap in quotes. `/skill "hello world" second` → `$0` = `hello world`, `$1` = `second`.
 
@@ -206,6 +225,18 @@ Reference scripts relative to skill location regardless of working directory:
 allowed-tools: Bash(python3 *)
 ---
 Run: python3 ${CLAUDE_SKILL_DIR}/scripts/analyze.py .
+```
+
+`${CLAUDE_SKILL_DIR}` and `${CLAUDE_PROJECT_DIR}` are substituted in two places: the skill body, and Bash rules in `allowed-tools`. Using the same variable in both lets a skill run a bundled script with no permission prompt, because the rule matches the exact command the body tells Claude to run:
+
+```yaml
+---
+name: render-chart
+description: Render a chart from a CSV file
+allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/render.sh *)
+---
+
+Run `${CLAUDE_SKILL_DIR}/scripts/render.sh <csv-file>` to render the chart.
 ```
 
 ## Invocation Control

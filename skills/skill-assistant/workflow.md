@@ -29,6 +29,7 @@ Ask the user:
 
 - `context: fork` — isolated subagent
 - `agent: Explore|Plan|general-purpose` — which subagent (requires `context: fork`)
+- `background: false` — wait for the fork's result in the invoking turn (requires `context: fork`; forks run in the background by default)
 - `effort: low|medium|high|xhigh|max` — override effort for this skill's turn
 
 **Tools:**
