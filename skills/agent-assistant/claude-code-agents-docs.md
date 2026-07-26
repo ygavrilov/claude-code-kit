@@ -52,7 +52,7 @@ Available without creating anything — Claude delegates automatically, and they
 | `statusline-setup` | Sonnet | — | Configures status line (`/statusline`) |
 | `claude-code-guide` | Haiku | — | Answers Claude Code feature questions |
 
-A subagent cannot spawn subagents by default — the `Agent` tool is withheld unless nested spawning is enabled. See [Tool Access](#tool-access).
+A subagent can spawn subagents by default, up to three layers below the main conversation — the `Agent` tool is withheld only at the depth limit, forks excepted. See [Tool Access](#tool-access).
 
 ---
 
@@ -76,7 +76,7 @@ If both are set: `disallowedTools` applied first, then `tools` resolves against 
 
 **Tool pool** — a subagent inherits the built-in and MCP tools of the main conversation, narrowed by two filters. A [fork](#fork-subagents-experimental) skips both and receives the main conversation's exact pool.
 
-*Filter 1 — removed from every subagent* (listing them in `tools` has no effect): `Agent` (until nested spawning is enabled), `AskUserQuestion`, `EndConversation`, `EnterPlanMode`, `ExitPlanMode` (unless `permissionMode: plan`), `ScheduleWakeup`, `TaskOutput`, `WaitForMcpServers`, `Workflow`.
+*Filter 1 — removed from every subagent* (listing them in `tools` has no effect): `Agent` (when the subagent is at the depth limit), `AskUserQuestion`, `EndConversation`, `EnterPlanMode`, `ExitPlanMode` (unless `permissionMode: plan`), `ScheduleWakeup`, `TaskOutput`, `WaitForMcpServers`, `Workflow`.
 
 *Filter 2 — background subagents* (the default). A background subagent keeps every MCP tool but only these built-ins: `Read`, `Grep`, `Glob`, `Bash`, `PowerShell`, `Edit`, `Write`, `NotebookEdit`, `WebFetch`, `WebSearch`, `TodoWrite`, `Skill`, `ToolSearch`, `EnterWorktree`, `ExitWorktree`, `Monitor`, `TaskStop`, `SendMessage`, `Artifact`. Every other built-in is dropped, whether inherited or listed in `tools` — the same definition can resolve to different tools in foreground and background. Agent-team teammates additionally keep `TaskCreate`, `TaskGet`, `TaskList`, `TaskUpdate`, `CronCreate`, `CronDelete`, `CronList`.
 
@@ -87,13 +87,15 @@ tools: Read, Edit, Bash(git *), Bash(npm test)
 disallowedTools: Write, Edit
 ```
 
-**Nested spawning** — off by default: Claude Code withholds `Agent` from every subagent except a fork. Enable it by setting the number of layers allowed below the main conversation:
+**Nested spawning** — on by default, three layers below the main conversation (default raised to 3 in v2.1.219). At the limit, Claude Code withholds `Agent` from every subagent except a fork. Change the limit with the number of layers allowed below the main conversation (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`, v2.1.217+):
 
 ```json
 { "env": { "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "2" } }
 ```
 
-With nesting on, control spawning per agent:
+This value caps nesting at two layers; `1` turns nesting off.
+
+Within the depth limit, control spawning per agent:
 ```yaml
 tools: Agent, Read, Bash                        # this subagent may spawn subagents
 disallowedTools: Agent                          # this subagent may not
