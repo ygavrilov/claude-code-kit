@@ -246,6 +246,8 @@ In `settings.json`, respond to subagent lifecycle:
 }
 ```
 
+**Session-wide reach:** `settings.json` hooks aren't limited to `SubagentStart`/`SubagentStop` — `PreToolUse`/`PostToolUse` also fire for a subagent's own tool calls, same as in the main conversation. Hooks from settings files, managed policy settings, and plugins all apply inside subagents.
+
 ---
 
 ## Skills Preloading
