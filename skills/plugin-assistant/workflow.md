@@ -59,7 +59,7 @@ claude --plugin-dir ./my-plugin     # load without installing
 ### 5. Validate
 
 ```bash
-claude plugin validate    # same check the community review pipeline runs
+claude plugin validate ./my-plugin   # same check the community review pipeline runs
 ```
 
 Debug checklist if something is missing:

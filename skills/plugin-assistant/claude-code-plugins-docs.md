@@ -114,7 +114,7 @@ my-plugin/
 
 ### LSP Servers
 
-`.lsp.json` — real-time code intelligence. Users must have the language server binary installed. Prefer official LSP plugins for common languages; create custom only for unsupported ones.
+`.lsp.json` — real-time code intelligence. Users must have the language server binary installed. Prefer official LSP plugins for common languages; create custom only for unsupported ones. A server that fails to start (e.g. binary not on `$PATH`) shows up in the `/plugin` manager's Errors tab; `claude --debug` explains why a misconfigured entry was skipped.
 
 ```json
 {
@@ -167,18 +167,18 @@ claude --plugin-url https://.../my-plugin.zip # hosted .zip, session only
 claude --plugin-dir ./one --plugin-dir ./two # multiple at once
 ```
 
-`/reload-plugins` picks up edits without restart (reloads skills, agents, hooks, plugin MCP + LSP servers).
+`/reload-plugins` picks up edits without restart (reloads skills, agents, hooks, plugin MCP + LSP servers). Its summary's skill count only covers `commands/` dirs, so it can report `0 skills` even though a `skills/` edit reloaded fine.
 
-A local `--plugin-dir` plugin overrides an installed marketplace plugin of the same name for the session — except plugins force-enabled/disabled by managed settings.
+A local `--plugin-dir` plugin overrides an installed marketplace plugin of the same name for the session — except plugins force-enabled/disabled by managed settings. A `--plugin-url` fetch failure or invalid archive is also recorded in the `/plugin` manager's Errors tab; Claude Code starts without the plugin instead of failing the session.
 
-Verify: skills via `/plugin-name:skill-name`, agents in `/agents`, hooks fire as expected.
+Verify: skills via `/plugin-name:skill-name`, agents in `/agents`, hooks by triggering the event each one matches and checking the [debug log](https://docs.claude.com/en/docs/claude-code/hooks#debug-hooks) for what fired.
 
 ---
 
 ## Validate
 
 ```bash
-claude plugin validate
+claude plugin validate ./my-plugin
 ```
 
 Same check run by the community review pipeline. Debug order:
@@ -251,7 +251,7 @@ Pointing the `github` form at the marketplace's OWN repo breaks install — use 
 - `claude-plugins-official` — curated by Anthropic, available in every install. No application process.
 - `claude-community` — public submissions after review. Users add: `/plugin marketplace add anthropics/claude-plugins-community`.
 
-Submit via in-app form (claude.ai/settings/plugins/submit or platform.claude.com/plugins/submit). Run `claude plugin validate` first. Approved plugins pinned to a commit SHA; catalog syncs nightly.
+Submit via in-app form (claude.ai/settings/plugins/submit or platform.claude.com/plugins/submit). Run `claude plugin validate ./my-plugin` first. Approved plugins pinned to a commit SHA; catalog syncs nightly.
 
 ---
 
