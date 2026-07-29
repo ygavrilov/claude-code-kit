@@ -62,7 +62,7 @@ A subagent can spawn subagents by default, up to three layers below the main con
 
 | Field | Description |
 |-------|-------------|
-| `name` | Unique identifier. Lowercase letters and hyphens only. |
+| `name` | Unique identifier. Lowercase letters and hyphens only. Can't contain `:` — reserved for plugin-scoped identifiers (e.g. `my-plugin:reviewer`). Claude Code skips loading a file whose name contains one and logs an error to the debug log. |
 | `description` | When Claude should delegate to this agent. Keyword-rich. Include "Use proactively" to encourage auto-delegation. |
 
 ### Tool Access
@@ -191,6 +191,8 @@ Inline definitions use same schema as `.mcp.json` (stdio, http, sse, ws). They c
 ## Hooks in Frontmatter
 
 Hooks run while the agent is active (subagent or main session via `--agent`):
+
+Project-level subagent frontmatter hooks only run once the workspace-trust dialog is accepted for the folder containing the agent file. User-level (`~/.claude/agents/`) hooks and hooks passed via `--agents` run without this step. Until trusted, the subagent still runs, but Claude Code skips its frontmatter hooks and logs an error to the debug log.
 
 ```yaml
 hooks:

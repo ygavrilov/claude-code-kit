@@ -29,7 +29,7 @@ skill-name/
 
 **Live change detection:** Adding, editing, or removing a skill takes effect within the current session without restarting. Creating a new top-level skills directory requires restart.
 
-**Parent/nested discovery:** Skills load from `.claude/skills/` in the starting directory and every parent up to the repo root. Claude also discovers skills from nested `.claude/skills/` on demand (e.g. `packages/frontend/.claude/skills/`).
+**Parent/nested discovery:** Skills load from `.claude/skills/` in the starting directory and every parent up to the repo root. Nested `.claude/skills/` directories below the starting directory (e.g. `packages/frontend/.claude/skills/`) aren't loaded at startup — they load the first time Claude reads or edits a file inside that subdirectory, and stay available for the rest of the session. Until then, those skills don't appear in autocomplete and can't be invoked by name. To load skills from outside the starting path at startup, pass the directory with `--add-dir`.
 
 ## How a Skill Gets Its Command Name
 

@@ -167,7 +167,7 @@ claude --plugin-url https://.../my-plugin.zip # hosted .zip, session only
 claude --plugin-dir ./one --plugin-dir ./two # multiple at once
 ```
 
-`/reload-plugins` picks up edits without restart (reloads skills, agents, hooks, plugin MCP + LSP servers). Its summary's skill count only covers `commands/` dirs, so it can report `0 skills` even though a `skills/` edit reloaded fine.
+`/reload-plugins` picks up edits without restart (reloads skills, agents, hooks, plugin MCP + LSP servers). Its summary's skill count only covers `commands/` dirs, so it can report `0 skills` even though a `skills/` edit reloaded fine. Running it mid-session keeps the live connections of MCP servers whose configuration is unchanged.
 
 A local `--plugin-dir` plugin overrides an installed marketplace plugin of the same name for the session — except plugins force-enabled/disabled by managed settings. A `--plugin-url` fetch failure or invalid archive is also recorded in the `/plugin` manager's Errors tab; Claude Code starts without the plugin instead of failing the session.
 
