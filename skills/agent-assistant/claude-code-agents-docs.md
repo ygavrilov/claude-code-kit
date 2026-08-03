@@ -51,7 +51,7 @@ Available without creating anything — Claude delegates automatically, and they
 | `general-purpose` | Inherit | Every tool available to subagents | Complex multi-step tasks needing exploration + action |
 | `statusline-setup` | Sonnet | — | Configures status line (`/statusline`) |
 | `claude-code-guide` | Haiku | — | Answers Claude Code feature questions |
-| `claude` | Inherit | — | Default delegate for a background session (`claude agents` / `claude --bg`) when no agent is named; can also receive delegation like any other subagent |
+| `claude` | Inherit | — | Default delegate for a background session (`claude agents`) when the dispatch resolves to it as the default agent; can also receive delegation like any other subagent |
 
 A subagent can spawn subagents by default, up to three layers below the main conversation — the `Agent` tool is withheld only at the depth limit, forks excepted. See [Tool Access](#tool-access).
 
