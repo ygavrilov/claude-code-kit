@@ -92,6 +92,9 @@ Boolean fields accept `yes`, `no`, `on`, `off`, `1`, and `0` in any letter case,
 | `hooks`                    | Hooks scoped to this skill's lifecycle.                                                                               |
 | `paths`                    | Glob patterns limiting when skill auto-activates. Comma-separated string or YAML list.                               |
 | `shell`                    | Shell for `!` blocks: `bash` (default) or `powershell`.                                                              |
+| `metadata`                 | Free-form YAML map for your own key-value data (e.g. entitlement or catalog fields). Claude Code doesn't act on its contents; drops a value that isn't a map. |
+| `license`                  | License identifier covering the skill. Claude Code accepts it but doesn't act on it (Agent Skills spec field).      |
+| `compatibility`            | Environment/prerequisite string, up to 500 chars. Claude Code accepts it but doesn't act on it (Agent Skills spec field). |
 
 ### Field Details
 
