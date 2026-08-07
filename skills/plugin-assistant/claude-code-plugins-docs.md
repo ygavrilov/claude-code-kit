@@ -162,7 +162,7 @@ Setting `agent` activates one of the plugin's custom agents as the main thread (
 
 ```bash
 claude --plugin-dir ./my-plugin              # load without installing
-claude --plugin-dir ./my-plugin.zip          # .zip archive (v2.1.128+)
+claude --plugin-dir ./my-plugin.zip          # .zip archive
 claude --plugin-url https://.../my-plugin.zip # hosted .zip, session only
 claude --plugin-dir ./one --plugin-dir ./two # multiple at once
 ```
