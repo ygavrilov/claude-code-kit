@@ -84,7 +84,7 @@ Boolean fields accept `yes`, `no`, `on`, `off`, `1`, and `0` in any letter case,
 | `user-invocable`           | `false` → hide from `/` menu; only Claude can invoke. Default: `true`.                                               |
 | `allowed-tools`            | Tools pre-approved (no prompt) for the turn that invokes the skill. Grant clears on your next message. Space- or comma-separated string or YAML list. |
 | `disallowed-tools`         | Tools removed from Claude's pool while skill is active. Clears on next user message.                                 |
-| `model`                    | Model override for this skill's turn. Reverts to session model on next prompt.                                       |
+| `model`                    | Model override for this skill's turn; reverts to session model on next prompt. With `context: fork`, sets the forked subagent's model instead. |
 | `effort`                   | Effort level override: `low`, `medium`, `high`, `xhigh`, `max`. Reverts to session default after.                   |
 | `context`                  | `fork` → run in isolated subagent context.                                                                            |
 | `agent`                    | Subagent type when `context: fork`. Built-ins: `Explore`, `Plan`, `general-purpose`. Or custom agent name.           |
