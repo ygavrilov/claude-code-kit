@@ -63,7 +63,7 @@ A subagent can spawn subagents by default, up to three layers below the main con
 
 | Field | Description |
 |-------|-------------|
-| `name` | Unique identifier. Lowercase letters and hyphens only. Can't contain `:` — reserved for plugin-scoped identifiers (e.g. `my-plugin:reviewer`). Claude Code skips loading a file whose name contains one and logs an error to the debug log. |
+| `name` | Unique identifier. Lowercase letters and hyphens only. Can't contain `:` — reserved for plugin-scoped identifiers (e.g. `my-plugin:reviewer`). Claude Code skips loading a file whose name contains one and logs an error to the debug log (enforced since v2.1.218; earlier versions accepted such names). |
 | `description` | When Claude should delegate to this agent. Keyword-rich. Include "Use proactively" to encourage auto-delegation. |
 
 ### Tool Access

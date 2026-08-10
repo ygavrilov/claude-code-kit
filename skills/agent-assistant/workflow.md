@@ -84,7 +84,7 @@ Single `.md` file — no directory needed. After writing, remind user: run `/age
 
 - [ ] Single `.md` at correct path
 - [ ] YAML frontmatter valid
-- [ ] `name` lowercase-with-hyphens
+- [ ] `name` lowercase-with-hyphens, no `:` (reserved for plugin-scoped ids; a colon stops the file loading)
 - [ ] `description` clearly describes when to delegate
 - [ ] Tools grant only necessary access
 - [ ] System prompt has clear role + numbered workflow
