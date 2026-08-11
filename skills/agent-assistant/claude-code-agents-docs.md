@@ -134,6 +134,7 @@ Model resolution order (highest wins):
 **Parent override rules:**
 - If parent uses `bypassPermissions` or `acceptEdits` → takes precedence, cannot be overridden
 - If parent uses `auto` → subagent inherits `auto`, `permissionMode` in frontmatter is ignored
+- If the managed setting `permissions.disableBypassPermissionsMode` is on → `permissionMode: bypassPermissions` in the subagent's frontmatter is ignored; the parent session's mode applies instead
 
 ### Memory (Persistent Across Sessions)
 

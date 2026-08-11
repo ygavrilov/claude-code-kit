@@ -27,6 +27,8 @@ skill-name/
 
 **`.claude/commands/` files still work** and support the same frontmatter. Skills are preferred since they support supporting files. If a command and skill share the same name, the skill takes precedence.
 
+**Reserved name:** `synced` (any capitalization) is reserved in the enterprise, personal, and project skill locations — Claude Code uses `<location>/skills/synced/` to store skills downloaded from claude.ai when `CLAUDE_CODE_SYNC_SKILLS` is set, and skips a skill you author at that name.
+
 **Live change detection:** Adding, editing, or removing a skill takes effect within the current session without restarting. Creating a new top-level skills directory requires restart.
 
 **Parent/nested discovery:** Skills load from `.claude/skills/` in the starting directory and every parent up to the repo root. Nested `.claude/skills/` directories below the starting directory (e.g. `packages/frontend/.claude/skills/`) aren't loaded at startup — they load the first time Claude reads or edits a file inside that subdirectory, and stay available for the rest of the session. Until then, those skills don't appear in autocomplete and can't be invoked by name. To load skills from outside the starting path at startup, pass the directory with `--add-dir`.
