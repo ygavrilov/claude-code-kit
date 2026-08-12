@@ -191,6 +191,8 @@ If a skill stops influencing behavior after compaction, re-invoke it.
 | `${CLAUDE_EFFORT}`     | Current effort level: `low`, `medium`, `high`, `xhigh`, `max`             |
 | `${CLAUDE_SKILL_DIR}`  | Directory containing this `SKILL.md`. Use to reference bundled scripts.    |
 | `${CLAUDE_PROJECT_DIR}`| Project root — same path hooks and MCP servers receive. Use for project-local scripts, e.g. `${CLAUDE_PROJECT_DIR}/.claude/hooks/helper.sh` |
+| `${CLAUDE_PLUGIN_ROOT}`| Plugin skills only. The plugin's installation directory. Use to reference scripts or files bundled anywhere in the plugin, including resources shared between the plugin's skills. |
+| `${CLAUDE_PLUGIN_DATA}`| Plugin skills only. The plugin's persistent data directory, which survives plugin updates. Use for installed dependencies, generated files, or caches that must outlive an update. |
 
 Multi-word args: wrap in quotes. `/skill "hello world" second` → `$0` = `hello world`, `$1` = `second`.
 
@@ -232,7 +234,7 @@ allowed-tools: Bash(python3 *)
 Run: python3 ${CLAUDE_SKILL_DIR}/scripts/analyze.py .
 ```
 
-`${CLAUDE_SKILL_DIR}` and `${CLAUDE_PROJECT_DIR}` are substituted in two places: the skill body, and Bash rules in `allowed-tools`. Using the same variable in both lets a skill run a bundled script with no permission prompt, because the rule matches the exact command the body tells Claude to run:
+`${CLAUDE_SKILL_DIR}` and `${CLAUDE_PROJECT_DIR}` are substituted in two places: the skill body, and Bash rules in `allowed-tools`. In a plugin skill, `${CLAUDE_PLUGIN_ROOT}` and `${CLAUDE_PLUGIN_DATA}` are substituted in the same two places. Using the same variable in both lets a skill run a bundled script with no permission prompt, because the rule matches the exact command the body tells Claude to run:
 
 ```yaml
 ---
